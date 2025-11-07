@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Billing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <style>
+        /* Add this to your style section in index.html */
+.toast {
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+
+.toast.show {
+    display: block;
+    opacity: 1;
+}
+        .search {
+            width: 100%;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+            background-image: url('searchicon.png');
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            padding: 12px 20px 12px 40px;
+        }
+
+        /* Mobile-specific enhancements */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+
+            /* Fixed Header */
+            .app-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: white !important;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Fixed Footer */
+            .bottom-section {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                background: white;
+                border-top: 1px solid #dee2e6;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Main content spacing to account for fixed header and footer */
+            .main-content {
+                margin-top: 120px;
+                /* Adjust based on header height */
+                margin-bottom: 120px;
+                /* Adjust based on footer height */
+                min-height: calc(100vh - 260px);
+            }
+
+            /* Ensure app container takes full height */
+            .app-container {
+                min-height: 2vh;
+                position: relative;
+            }
+
+            /* Header content styling for mobile */
+            .app-header .container-fluid {
+                padding: 0;
+            }
+
+            .app-header .row {
+                margin: 0;
+            }
+
+            /* Make header text white and visible */
+            .app-header .navbar-text {
+                color: white !important;
+            }
+
+            /* Cart button styling */
+            .app-header .btn-outline-secondary {
+                border-color: white;
+                color: white;
+            }
+
+            .app-header .btn-outline-secondary:hover {
+                background-color: white;
+                color: white;
+            }
+
+            /* Search bar in header */
+            .app-header .search {
+                margin-top: 10px;
+                border: 0px solid rgb(255, 255, 255);
+                background-color: rgb(255, 255, 255);
+            }
+
+            /* Payment summary styling */
+            .payment-summary {
+                background: white;
+                padding: 15px !important;
+            }
+
+            /* Payment buttons */
+            .payment-btn {
+                font-size: 12px;
+                padding: 4px 8px;
+            }
+
+            /* Save button */
+            .save-btn {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            /* General styles */
+            .payment-btn.active {
+                background-color: #0d6efd;
+                color: white;
+                border-color: #0d6efd;
+            }
+
+            /* Menu section styling */
+            .menu-section {
+                padding-top: 10px;
+                /* Add some padding at the top of the menu section */
+            }
+
+            .section-title {
+                margin-top: 0 !important;
+            }
+        }
+
+        /* Adjust the main content margin-top for mobile to match your header height */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-top: 120px;
+                /* Reduced from 140px to make it tighter */
+                padding-top: 0;
+                /* Remove any additional padding */
+            }
+
+            /* Remove any extra margin/padding from the menu section */
+            .menu-section {
+                padding-top: 0;
+                margin-top: 0;
+            }
+
+            /* Ensure the section title has minimal top margin */
+            .section-title {
+                margin-top: 0 !important;
+            }
+        }
+
+        /* For desktop, make sure there's no extra space */
+        @media (min-width: 769px) {
+            .menu-section {
+                padding-top: 20px;
+                /* Reasonable padding for desktop */
+            }
+        }
+
+        /* General improvements */
+        .app-container {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        /* Menu grid improvements */
+        #menuGrid {
+            padding: 0 0px;
+        }
+
+        /* Modal improvements for mobile */
+        @media (max-width: 768px) {
+            .modal-dialog {
+                margin: 10px;
+                max-width: calc(100% - 20px);
+            }
+        }
+
+        /* Disable pointer events on all images within menu items */
+        #menuGrid img {
+            pointer-events: none;
+            cursor: default;
+        }
+
+        /* Optional: If you want to visually indicate the images are not clickable */
+        #menuGrid img {
+            opacity: 0.9;
+            filter: grayscale(20%);
+        }
+
+        .search-box {
+            width: 100%;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            padding: 12px 20px;
+        }
+
+        .order-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        /* Add this to your CSS */
+/* Calculator Styles */
+.calculator {
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+  width: 100%;
+}
+
+.calculator-screen {
+  width: 100%;
+  height: 50px;
+  border: none;
+  background-color: #f8f9fa;
+  color: #333;
+  text-align: right;
+  padding: 10px;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.calculator-keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 5px;
+}
+
+.calculator-keys button {
+  height: 50px;
+}
+
+.equal-sign {
+  grid-row: span 2;
+  height: auto;
+}
+
+/* Fixed Calculator Button */
+.calculator-fixed-btn {
+    position: fixed;
+    bottom: 20px;
+    /* right: 20px; */
+    z-index: 1000;
+    left: 8px;
+}
+
+.calculator-fixed-btn button {
+     margin-bottom: 45px;
+  width: 50px;
+  height: 50px;
+  font-size: 1.2rem;
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+  .calculator-fixed-btn {
+    bottom: 70px; /* Above the footer */
+  }
+}
+/* Default: hidden for screens wider than 768px */
+.responsive-element {
+  display: none;
+}
+
+/* Visible for screens 768px and below */
+@media screen and (max-width: 768px) {
+  .responsive-element {
+    display: block; /* or flex, inline, etc. as needed */
+  }
+}
+
+    </style>
+</head>
+
+<body class="responsive-element">
+    <div class="app-container">
+        <!-- Fixed Header (Mobile Only) -->
+        <header class="app-header">
+            <div class="container-fluid">
+                <div class="row align-items-center py-3" style="background: #0d6efd;">
+                    <div class="col-12 text-center">
+                        <span class="navbar-text" style="font-size: 28px;font-weight: 500;">
+                            <span sytle="font-size:24px; font-weight:500">Pocket Billing</span>
+                            <!-- <button type="button" class="btn btn-outline-secondary"
+                                style="float: right; background-color:rgb(250, 252, 250)" fdprocessedid="06p0t8">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="light color"
+                                    class="bi bi-cart" viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2">
+                                    </path>
+                                </svg>
+                                <span class="visually-hidden">Button</span>
+                            </button>
+                        </span> -->
+                    </div>
+                    <div class="col-12">
+                        <form class="d-flex">
+                            <input type="text" class="search" id="menuSearch" name="search"
+                                placeholder="Search menu items...">
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+    </div>
+    </header>
+    <!-- Main Content -->
+    <main class=" main-content">
+        <div class="container-fluid px-10">
+            <!-- Best Seller Section -->
+            <section class="menu-section">
+                <h6 class="section-title mb-3 fw-bold text-muted">Best Seller Items</h6>
+                <div class="row g-2" id="menuGrid">
+                      <!-- Menu items will be dynamically loaded here -->
+        </div>
+        </section>
+        </div>
+    </main>
+    <!-- Fixed Bottom Footer (Mobile Only) -->
+<div class="calculator-fixed-btn">
+        <button class="btn btn-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#calculatorModal">
+            <i class="fas fa-calculator"></i>
+        </button>
+</div>
+    <footer class="bottom-section">
+        <div class="payment-summary px-3 py-2">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted">Received - ₹<span id="totalDisplay">00</span></span>
+                <div class="payment-methods">
+                    <button class="btn btn-sm btn-outline-secondary me-1 payment-btn" data-method="cash"
+                        onclick="selectPaymentMethod('cash')">Cash</button>
+                    <button class="btn btn-sm btn-outline-secondary payment-btn active" data-method="cheque"
+                        onclick="selectPaymentMethod('cheque')">UPI</button>
+                </div>
+            </div>
+            <button class="btn btn-primary w-100 py-2 fw-semibold save-btn" data-bs-toggle="modal"
+                data-bs-target="#saveOrderModal">
+                <i class="fas fa-save me-2"></i>Save Order
+            </button>
+        </div>
+    </footer>
+    </div>
+    <div class="modal fade" id="calculatorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Calculator</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="calculator">
+          <input type="text" class="calculator-screen" value="" disabled />
+          <div class="calculator-keys">
+            <button type="button" class="operator btn btn-outline-secondary" value="+">+</button>
+            <button type="button" class="operator btn btn-outline-secondary" value="-">-</button>
+            <button type="button" class="operator btn btn-outline-secondary" value="*">&times;</button>
+            <button type="button" class="operator btn btn-outline-secondary" value="/">&divide;</button>
+            
+            <button type="button" class="btn btn-outline-secondary" value="7">7</button>
+            <button type="button" class="btn btn-outline-secondary" value="8">8</button>
+            <button type="button" class="btn btn-outline-secondary" value="9">9</button>
+            
+            <button type="button" class="btn btn-outline-secondary" value="4">4</button>
+            <button type="button" class="btn btn-outline-secondary" value="5">5</button>
+            <button type="button" class="btn btn-outline-secondary" value="6">6</button>
+            
+            <button type="button" class="btn btn-outline-secondary" value="1">1</button>
+            <button type="button" class="btn btn-outline-secondary" value="2">2</button>
+            <button type="button" class="btn btn-outline-secondary" value="3">3</button>
+            
+            <button type="button" class="btn btn-outline-secondary" value="0">0</button>
+            <button type="button" class="decimal btn btn-outline-secondary" value=".">.</button>
+            <button type="button" class="all-clear btn btn-outline-danger" value="all-clear">AC</button>
+            
+            <button type="button" class="equal-sign btn btn-primary" value="=">=</button>
+            <button type="button" class="save-result btn btn-success" value="save">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+     <!-- Order Preview Modal -->
+    <div class="modal fade" id="saveOrderModal" tabindex="-1" aria-labelledby="saveOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="saveOrderModalLabel">
+                        <i class="fas fa-receipt me-2"></i>Order Bill Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="order-items mb-3" id="orderItemsList">
+
+    <!-- Order items will be inserted here -->
+                    </div>
+                 <form action="https://script.google.com/macros/s/AKfycbyT5wDoFeQDI-0S0G2jkQqBuhL0E-3j_Oqzt42fb9mpeUHhnmADZDt6aqOTgq3If2VO/exec" method="post" id="billing_system">
+                    <div class="discount-option mb-3">
+                        <label class="form-label"><strong>Apply Discount</strong></label>
+                        <div class="input-group mb-2">
+                            <select class="form-select" id="discountType" style="max-width: 120px;">
+                                <option value="fixed">₹ Fixed</option>
+                                <option value="percentage">% Percentage</option>
+                            </select>
+                            <input type="number" class="form-control" id="discountValue" placeholder="Value" min="0" step="0.01">
+                            <button class="btn btn-outline-secondary" type="button" onclick="applyDiscount()">Apply</button>
+                        </div>
+                    </div>
+
+                    <div class="order-summary bg-light p-3 rounded">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span><strong>Subtotal:</strong></span>
+                            <span>₹<span id="modalSubtotal">0.00</span></span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span><strong>Discount:</strong></span>
+                            <span>-₹<span id="modalDiscount">0.00</span></span>
+                        </div>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span><strong>Total Amount:</strong></span>
+                            <span>₹<span id="modalTotalAmount">0.00</span></span>
+                        </div>
+                       
+                        <div class="mt-2">
+                            <span><strong>Payment Method:</strong> <span id="modalPaymentMethod">Cash</span></span>
+                        </div>
+                         <div class="d-flex justify-content-between fw-bold">
+                            <span><strong>Mobile No:</strong></span>
+                           <input type="text"  name="mobileno" required>
+                        </div>
+                                            
+                        <!-- Hidden fields to send values -->
+                        <input type="hidden" name="subtotal" id="hiddenSubtotal">
+                        <input type="hidden" name="discount" id="hiddenDiscount">
+                        <input type="hidden" name="total " id="hiddenTotalAmount">
+                        <input type="hidden" name="paymentmethod" id="hiddenPaymentMethod">
+                        <input type="hidden" name="date" id="hiddenDate">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" >
+                        <i class="fas fa-check me-2"></i>Confirm & Save
+                    </button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="success-icon mb-3">
+                        <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="mb-2">Order Completed Successfully!</h5>
+                    <p class="text-muted mb-3">Your order has been processed and saved.</p>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="resetApp()">
+                        Start New Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="bootstrap.js"></script>
+    <script src="app.js"></script>
+    <script>
+function setCurrentDateTime() {
+    const now = new Date();
+
+    // Format as dd/mm/yyyy h:mma
+    const options = { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric', 
+        hour: 'numeric', 
+        minute: '2-digit', 
+        hour12: true 
+    };
+    const formatted = now.toLocaleString('en-GB', options).replace(',', '').toLowerCase();
+
+    document.getElementById('hiddenDate').value = formatted;
+}
+
+// Run on page load
+setCurrentDateTime();
+</script>
+    
+      <script>
+        // Initialize modal when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function () {
+
+
+            // When save order modal is about to be shown, update the order summary
+            document.getElementById('saveOrderModal').addEventListener('show.bs.modal', function () {
+                // Update the modal with current order details
+
+                document.getElementById('modalTotalAmount').textContent =
+                    document.getElementById('totalDisplay').textContent || '0.00';
+
+                // Get current payment method (assuming you have this functionality)
+                const paymentMethod = document.querySelector('.payment-btn.active').dataset.method;
+                document.getElementById('modalPaymentMethod').textContent =
+                    paymentMethod === 'cash' ? 'Cash' : 'UPI';
+            });
+        });
+
+        // Global variables
+        let orderItems = [];
+        let currentDiscount = { type: 'fixed', value: 0 };
+        let currentPaymentMethod = 'UPI';
+        
+        // Sample menu data
+        const menuItems = [
+            { id: 1, name: 'Idli', price: 50, image: 'Idli.jpeg' },
+            { id: 2, name: 'Dosa', price: 100, image: 'Masala-Dosa.jpg' },
+            { id: 3, name: 'Vada', price: 50, image: 'Vada.jpg' },
+            { id: 4, name: 'Biryani', price: 150, image: 'Veg-Dum-Biryani.jpg' },
+            { id: 5, name: 'Noodles', price: 150, image: 'Noodles.jpg' },
+            { id: 6, name: 'Pao Bhaji', price: 150, image: 'PavBhaji.jpg' },
+            { id: 7, name: 'Chicken Curry', price: 250, image: 'red-chicken-curry.jpg' },
+            { id: 8, name: 'Chicken Biryani', price: 250, image: 'Chicken Briyani.jpg' },
+            { id: 9, name: 'Veg Thali', price: 230, image: 'Veg-thali.jpg' },
+            { id: 10, name: 'Samosa', price: 40, image: 'Samosa.jpg' },
+            { id: 11, name: 'Chole Bhature', price: 120, image: 'Chole bhatura.jpg' },
+            { id: 12, name: 'Coffee', price: 110, image: 'Coffee.jpeg' },
+            { id: 13, name: 'Masala Chai', price: 30, image: 'Masala Chai.jpg' },
+            { id: 14, name: 'Lassi', price: 60, image: 'Lassi.jpeg' },
+            { id: 15, name: 'Gulab Jamun', price: 80, image: 'gulab jamun.jpg' }
+        ];
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMenuItems();
+            setupEventListeners();
+        });
+
+        // Load menu items into the grid
+        function loadMenuItems() {
+            const menuGrid = document.getElementById('menuGrid');
+            menuGrid.innerHTML = '';
+            
+            menuItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'col-4 mb-3 menu-item';
+                itemElement.innerHTML = `
+                    <div class="card h-100" data-item-id="${item.id}">
+                        <img src="${item.image}" alt="${item.name}" class="card-img-top" style="height: 80px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <h6 class="card-title mb-1">${item.name}</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold">₹${item.price}</span>
+                                <button class="btn btn-sm btn-success" onclick="addToOrder(${item.id})">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                menuGrid.appendChild(itemElement);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search functionality
+            document.getElementById('menuSearch').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                document.querySelectorAll('.menu-item').forEach(item => {
+                    const itemName = item.textContent.toLowerCase();
+                    item.style.display = itemName.includes(searchTerm) ? '' : 'none';
+                });
+            });
+            
+            // Payment method selection
+            document.querySelectorAll('.payment-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentPaymentMethod = this.dataset.method;
+                    document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // When order modal is shown, update its contents
+            document.getElementById('saveOrderModal').addEventListener('show.bs.modal', updateOrderModal);
+        }
+
+        // Add item to order
+       function addToOrder(itemId) {
+    const item = menuItems.find(i => i.id === itemId);
+    if (!item) return;
+    
+    const existingItem = orderItems.find(i => i.id === item.id);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        orderItems.push({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: 1
+        });
+    }
+    
+    updateTotalDisplay();
+    
+    // Show toast notification
+    showToast(`${item.name} added to order (Qty: ${existingItem ? existingItem.quantity : 1})`);
+}
+
+// Add this function to show toast notifications
+function showToast(message) {
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast show align-items-center text-white bg-success';
+    toast.style.position = 'fixed';
+    toast.style.top = '20px';
+    toast.style.right = '20px';
+    toast.style.zIndex = '1100';
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    // Add to body
+    document.body.appendChild(toast);
+    
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+        // Update the total display in footer
+        function updateTotalDisplay() {
+            const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            let discountAmount = 0;
+            
+            if (currentDiscount.type === 'percentage') {
+                discountAmount = subtotal * (currentDiscount.value / 100);
+            } else {
+                discountAmount = currentDiscount.value;
+            }
+            
+            // Ensure discount doesn't exceed subtotal
+            discountAmount = Math.min(discountAmount, subtotal);
+            
+            const total = subtotal - discountAmount;
+            document.getElementById('totalDisplay').textContent = total.toFixed(2);
+        }
+
+        // Update the order modal with current items
+        function updateOrderModal() {
+            const orderItemsList = document.getElementById('orderItemsList');
+            orderItemsList.innerHTML = '';
+
+            let subtotal = 0;
+
+            orderItems.forEach((item, index) => {
+                subtotal += item.price * item.quantity;
+
+                const itemElement = document.createElement('div');
+                itemElement.className = 'order-item';
+                itemElement.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">${item.name}</h6>
+                            <small class="text-muted">₹${item.price.toFixed(2)} × ${item.quantity}</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-secondary me-1" onclick="updateQuantity(${index}, -1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="updateQuantity(${index}, 1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <span class="ms-3 fw-bold">₹${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                orderItemsList.appendChild(itemElement);
+            });
+
+            // Calculate totals
+            document.getElementById('modalSubtotal').textContent = subtotal.toFixed(2);
+
+            let discountAmount = 0;
+            if (currentDiscount.type === 'percentage') {
+                discountAmount = subtotal * (currentDiscount.value / 100);
+            } else {
+                discountAmount = currentDiscount.value;
+            }
+
+            // Ensure discount doesn't exceed subtotal
+            discountAmount = Math.min(discountAmount, subtotal);
+
+            document.getElementById('modalDiscount').textContent = discountAmount.toFixed(2);
+            const totalAmount = subtotal - discountAmount;
+            document.getElementById('modalTotalAmount').textContent = totalAmount.toFixed(2);
+            document.getElementById('modalPaymentMethod').textContent = currentPaymentMethod === 'cash' ? 'Cash' : 'UPI';
+        }
+
+        // Update item quantity
+        function updateQuantity(index, change) {
+            const newQuantity = orderItems[index].quantity + change;
+            if (newQuantity > 0) {
+                orderItems[index].quantity = newQuantity;
+            } else {
+                orderItems.splice(index, 1);
+            }
+            updateOrderModal();
+            updateTotalDisplay();
+        }
+
+        // Apply discount
+        function applyDiscount() {
+            currentDiscount = {
+                type: document.getElementById('discountType').value,
+                value: parseFloat(document.getElementById('discountValue').value) || 0
+            };
+            updateOrderModal();
+            updateTotalDisplay();
+        }
+        
+
+        // Process the order
+       function processOrder() {
+    const totalAmount = parseFloat(document.getElementById('modalTotalAmount').textContent);
+    
+    // Prepare order data for the bill
+    const orderData = {
+        items: orderItems,
+        subtotal: parseFloat(document.getElementById('modalSubtotal').textContent),
+        discount: parseFloat(document.getElementById('modalDiscount').textContent),
+        total: totalAmount,
+        paymentMethod: currentPaymentMethod,
+        date: new Date()
+    };
+     
+    // Store order data in localStorage
+    localStorage.setItem('currentOrder', JSON.stringify(orderData));
+
+    // Close the order modal
+    const orderModal = bootstrap.Modal.getInstance(document.getElementById('saveOrderModal'));
+    orderModal.hide();
+
+    // Redirect to bill.html
+    window.location.href = 'bill.html';
+}
+// Add this to your JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize calculator
+  initCalculator();
+  
+  // Load saved calculations
+  loadSavedCalculations();
+});
+
+function initCalculator() {
+  const calculator = {
+    displayValue: '0',
+    firstOperand: null,
+    waitingForSecondOperand: false,
+    operator: null,
+  };
+
+  const screen = document.querySelector('.calculator-screen');
+  const keys = document.querySelector('.calculator-keys');
+
+  // Update calculator screen
+  function updateDisplay() {
+    screen.value = calculator.displayValue;
+  }
+
+  // Handle digit input
+  function inputDigit(digit) {
+    const { displayValue, waitingForSecondOperand } = calculator;
+
+    if (waitingForSecondOperand === true) {
+      calculator.displayValue = digit;
+      calculator.waitingForSecondOperand = false;
+    } else {
+      calculator.displayValue = displayValue === '0' ? digit : displayValue + digit;
+    }
+  }
+
+  // Handle decimal input
+  function inputDecimal(dot) {
+    if (calculator.waitingForSecondOperand === true) {
+      calculator.displayValue = '0.';
+      calculator.waitingForSecondOperand = false;
+      return;
+    }
+
+    if (!calculator.displayValue.includes(dot)) {
+      calculator.displayValue += dot;
+    }
+  }
+
+  // Handle operators
+  function handleOperator(nextOperator) {
+    const { firstOperand, displayValue, operator } = calculator;
+    const inputValue = parseFloat(displayValue);
+
+    if (operator && calculator.waitingForSecondOperand) {
+      calculator.operator = nextOperator;
+      return;
+    }
+
+    if (firstOperand == null && !isNaN(inputValue)) {
+      calculator.firstOperand = inputValue;
+    } else if (operator) {
+      const result = calculate(firstOperand, inputValue, operator);
+
+      calculator.displayValue = `${parseFloat(result.toFixed(7))}`;
+      calculator.firstOperand = result;
+    }
+
+    calculator.waitingForSecondOperand = true;
+    calculator.operator = nextOperator;
+  }
+
+  // Perform calculation
+  function calculate(firstOperand, secondOperand, operator) {
+    switch (operator) {
+      case '+':
+        return firstOperand + secondOperand;
+      case '-':
+        return firstOperand - secondOperand;
+      case '*':
+        return firstOperand * secondOperand;
+      case '/':
+        return firstOperand / secondOperand;
+      default:
+        return secondOperand;
+    }
+  }
+
+  // Reset calculator
+  function resetCalculator() {
+    calculator.displayValue = '0';
+    calculator.firstOperand = null;
+    calculator.waitingForSecondOperand = false;
+    calculator.operator = null;
+  }
+
+  // Save calculation to localStorage
+  function saveCalculation() {
+    const calculations = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+    calculations.push({
+      calculation: calculator.displayValue,
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('calculatorHistory', JSON.stringify(calculations));
+    
+    showToast('Calculation saved!');
+  }
+
+  // Handle button clicks
+  keys.addEventListener('click', (event) => {
+    const { target } = event;
+    if (!target.matches('button')) return;
+
+    if (target.classList.contains('operator')) {
+      handleOperator(target.value);
+      updateDisplay();
+      return;
+    }
+
+    if (target.classList.contains('decimal')) {
+      inputDecimal(target.value);
+      updateDisplay();
+      return;
+    }
+
+    if (target.classList.contains('all-clear')) {
+      resetCalculator();
+      updateDisplay();
+      return;
+    }
+
+    if (target.classList.contains('equal-sign')) {
+      if (calculator.operator) {
+        handleOperator(target.value);
+      }
+      updateDisplay();
+      return;
+    }
+
+    if (target.classList.contains('save-result')) {
+      saveCalculation();
+      return;
+    }
+
+    inputDigit(target.value);
+    updateDisplay();
+  });
+
+  // Initialize display
+  updateDisplay();
+}
+
+// Load saved calculations from localStorage
+function loadSavedCalculations() {
+  const calculations = JSON.parse(localStorage.getItem('calculatorHistory')) || [];
+  console.log('Saved calculations:', calculations);
+  // You can display these in your app if needed
+}
+
+// Show toast notification
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast show align-items-center text-white bg-success';
+  toast.style.position = 'fixed';
+  toast.style.top= '65px';
+  toast.style.right = '20px';
+  toast.style.zIndex = '1100';
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">
+        ${message}
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  `;
+  
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+        // Reset the app for a new order
+        function resetApp() {
+            orderItems = [];
+            currentDiscount = { type: 'fixed', value: 0 };
+            updateTotalDisplay();
+            
+            // Close success modal
+            const successModal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
+            successModal.hide();
+        }
+    </script>
+    <script>
+document.getElementById("billing_system").addEventListener("submit", function () {
+    document.getElementById("hiddenSubtotal").value = document.getElementById("modalSubtotal").innerText.trim();
+    document.getElementById("hiddenDiscount").value = document.getElementById("modalDiscount").innerText.trim();
+    document.getElementById("hiddenTotalAmount").value = document.getElementById("modalTotalAmount").innerText.trim();
+    document.getElementById("hiddenPaymentMethod").value = document.getElementById("modalPaymentMethod").innerText.trim();
+});
+</script>
+<script>
+    document.getElementById("billing_system").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const totalAmount = parseFloat(document.getElementById('modalTotalAmount').textContent);
+    
+    // Prepare order data for the bill
+    const orderData = {
+        items: orderItems,
+        subtotal: parseFloat(document.getElementById('modalSubtotal').textContent),
+        discount: parseFloat(document.getElementById('modalDiscount').textContent),
+        total: totalAmount,
+        paymentMethod: currentPaymentMethod,
+        date: new Date()
+    };
+     
+    // Close the order modal
+    // const orderModal = bootstrap.Modal.getInstance(document.getElementById('saveOrderModal'));
+    // orderModal.hide();
+    
+
+    const formData = new FormData(this);
+    const dataObject = {};
+    formData.forEach((value, key) => dataObject[key] = value);
+    localStorage.setItem("currentOrder", JSON.stringify(orderData));
+
+    // Send to Google Sheets
+    fetch(this.action, { method: "POST", body: formData })
+        .then(res => res.json().catch(() => ({})))
+        .then(() => {
+            // Redirect after success
+            window.location.href = "bill.html";
+        })
+        .catch(err => {
+            alert("Submission failed.");
+            console.error(err);
+        });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/* Add to your existing CSS */
+.image-container {
+  height: 70px; /* Maintain same container height */
+  align-items: center;
+}
+
+.item-image.custom-size {
+  height: auto;
+  max-height: 70px;
+}
+@media (max-width: 767.98px) {
+  .app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    background-color: #0d6efd;
+    
+  }
+
+  .main-content {
+    padding-top: 100px; /* leave space for fixed header */
+    padding-bottom: 120px; /* leave space for fixed footer */
+  }
+
+  .bottom-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    z-index: 1020;
+    border-top: 1px solid #ccc;
+  }
+
+  /* Optional: prevent the page from scrolling behind modals */
+  body.modal-open {
+    padding-right: 0 !important;
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f8f9fa;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* App Container */
+.app-container {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: white;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Styles */
+.app-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h4 {
+  color: white !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.section-title {
+  font-size: 16px;
+  margin-top: 20px;
+  color: #6c757d;
+}
+
+/* Menu Item Styles */
+.menu-item {
+  background: white;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  border: 2px solid transparent;
+  height: 100%;
+}
+
+.menu-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.menu-item:active {
+  transform: scale(0.98);
+}
+
+.menu-item.double-tap-animation {
+  animation: doubleTapPulse 0.4s ease;
+  border-color: #28a745;
+}
+
+.no-click {
+pointer-events: none;
+}
+
+@keyframes doubleTapPulse {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.05);
+    background-color: #e8f5e8;
+  }
+  50% {
+    transform: scale(1.1);
+    background-color: #d4edda;
+  }
+  75% {
+    transform: scale(1.05);
+    background-color: #e8f5e8;
+  }
+  100% {
+    transform: scale(1);
+    background-color: white;
+  }
+}
+
+.item-image {
+  width: 100%;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+}
+
+.item-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #333;
+  text-align: center;
+}
+
+.item-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: left;
+}
+
+.add-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.add-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.quantity-container {
+  position: relative;
+}
+
+.quantity-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(255, 107, 107, 0.4);
+  animation: bounceIn 0.3s ease;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Bottom Section */
+.bottom-section {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-top: 1px solid #e9ecef;
+  z-index: 1000;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.payment-summary {
+  background: white;
+}
+
+.payment-methods {
+  display: flex;
+  gap: 4px;
+}
+
+.payment-btn {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.payment-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* Bill Styles */
+.bill-container {
+  font-family: "Courier New", monospace;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.bill-header {
+  text-align: center;
+  border-bottom: 2px dashed #333;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.bill-header h4 {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.bill-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  padding: 2px 0;
+}
+
+.bill-item.total-row {
+  border-top: 2px dashed #333;
+  padding-top: 10px;
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.bill-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed #666;
+  font-size: 12px;
+  color: #666;
+}
+
+.discount-info {
+  color: #28a745;
+  font-weight: 600;
+}
+
+/* Modal Enhancements */
+.modal-content {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .app-container {
+    max-width: 100%;
+  }
+
+  .payment-methods {
+    gap: 2px;
+  }
+
+  .payment-btn {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+
+  .item-name {
+    font-size: 12px;
+  }
+
+  .item-price {
+    font-size: 13px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  .bill-container {
+    max-width: 100%;
+    font-size: 12px;
+  }
+}
+
+/* Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success Animation */
+.success-icon i {
+  animation: successPulse 0.6s ease;
+}
+
+@keyframes successPulse {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermal Printer Bill</title>
+    <style>
+        /* Main thermal printer styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            width: 80mm; /* Standard thermal printer width */
+            margin: 0;
+            padding: 5px;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+        
+        .bill-container {
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #000;
+            
+        }
+        
+        .restaurant-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .restaurant-details {
+            font-size: 12px;
+            margin: 3px 0;
+        }
+        
+        .bill-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 13px;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+        
+        .items-table th {
+            text-align: left;
+            border-bottom: 1px dashed #000;
+            padding: 3px 0;
+        }
+        
+        .items-table td {
+            padding: 4px 0;
+            vertical-align: top;
+        }
+        
+        .items-table .item-name {
+            width: 50%;
+        }
+        
+        .items-table .item-qty {
+            width: 15%;
+            text-align: center;
+        }
+        
+        .items-table .item-price {
+            width: 100%;
+            
+        }
+        
+        .items-table .item-total {
+            width: 100%;
+            text-align: right;
+        }
+        
+        .totals {
+            margin-top: 10px;
+            border-top: 1px dashed #000;
+            padding-top: 5px;
+        }
+        
+        .total-row{
+            display: flex;
+            justify-content: space-between;
+            margin: 3px 0;
+        }
+        
+        .grand-total {
+            font-weight: bold;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            border-top: 1px dashed #000;
+            padding-top: 5px;
+        }
+        
+        /* Print-specific styles */
+        @media print {
+            body {
+                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Font style */
+                font-size: 40px !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                 page-break-inside: avoid;
+                overflow: hidden;
+               
+                padding: 10px;
+            }
+              
+        .header, .footer,.restaurant-name,.bill-info,.items-table,th,td, .grand-total, .total-row{
+        font-size: 40px !important;
+        font-weight: 800;
+        line-height: 1.0;
+        }
+        .restaurant-details{
+             font-size: 30px !important;
+        }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            @page {
+                size: 80mm auto;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bill-container" id="printableBill">
+        <div class="header">
+            <div class="restaurant-name">POCKET BILLING</div>
+            <div class="restaurant-details">123 Restaurant Street, Food City</div>
+            <div class="restaurant-details">Phone: +91 9876543210</div>
+            <div class="restaurant-details">GSTIN: 22AAAAA0000A1Z5</div>
+        </div>
+        
+        <div class="bill-info">
+            <div>Bill No: 1234</div>
+            <div>Date: 26/07/2023 14:30</div>
+        </div>
+        
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th class="item-name">Item</th>
+                    <th class="item-qty">Qty</th>
+                    <th class="item-price">Price</th>
+                    <th class="item-total">Amount</th>
+                </tr>
+            </thead>
+            <tbody id="print-items">
+                <!-- Items will be inserted here -->
+            </tbody>
+        </table>
+        
+        <div class="totals">
+            <div class="total-row">
+                <span>Subtotal:</span>
+                <span>₹<span id="print-subtotal">0.00</span></span>
+            </div>
+            <div class="total-row">
+                <span>Discount:</span>
+               <span>-₹<span id="print-discount">0.00</span></span>
+            </div>
+            <div class="total-row grand-total">
+                <span>Grand Total:</span>
+              <span>₹<span id="print-total">0.00</span></span>
+            </div>
+            <div class="total-row">
+                <span>Payment Method:</span>
+                <span id="print-payment">Cash</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div>Thank you for dining with us!</div>
+            <div>Please visit again!</div>
+        </div>
+    </div>
+    
+    <div class="no-print" style="margin-top: 20px; text-align: center;">
+        <button onclick="window.print()">Print Bill</button>
+    </div>
+     <script src="app.js"></script>
+    <script>
+       function generateBill() {
+    // Get order data from localStorage
+    const orderData = JSON.parse(localStorage.getItem('currentOrder'));
+    if (!orderData) {
+        alert('No order data found. Please create an order first.');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Format date
+    const date = new Date(orderData.date);
+    const formattedDate = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+    
+    // Generate random bill number
+    const billNo = Math.floor(1000 + Math.random() * 9000);
+    
+    // Update bill header
+    document.querySelector('.bill-info div:first-child').textContent = `Bill No: ${billNo}`;
+    document.querySelector('.bill-info div:last-child').textContent = `Date: ${formattedDate}`;
+    
+    // Add items to bill
+    const itemsContainer = document.getElementById('print-items');
+    itemsContainer.innerHTML = '';
+    
+    orderData.items.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td class="item-name">${item.name}</td>
+            <td class="item-qty">${item.quantity}</td>
+            <td class="item-price">₹${item.price.toFixed(2)}</td>
+            <td class="item-total">₹${(item.price * item.quantity).toFixed(2)}</td>
+        `;
+        itemsContainer.appendChild(row);
+    });
+    
+    // Update totals
+    document.getElementById('print-subtotal').textContent = orderData.subtotal.toFixed(2);
+    document.getElementById('print-discount').textContent = orderData.discount.toFixed(2);
+    document.getElementById('print-total').textContent = orderData.total.toFixed(2);
+    document.getElementById('print-payment').textContent = orderData.paymentMethod === 'cash' ? 'Cash' : 'UPI';
+    
+    // Auto-print the bill
+    setTimeout(() => {
+        window.print();
+    }, 500);
+}
+
+// Call this when the page loads
+document.addEventListener('DOMContentLoaded', generateBill);
+    </script>
+</body>
+</html>

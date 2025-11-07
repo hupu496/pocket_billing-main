@@ -1,0 +1,11 @@
+id = billing_system 
+
+deployment key=AKfycbyT5wDoFeQDI-0S0G2jkQqBuhL0E-3j_Oqzt42fb9mpeUHhnmADZDt6aqOTgq3If2VO
+
+web url = https://script.google.com/macros/s/AKfycbyT5wDoFeQDI-0S0G2jkQqBuhL0E-3j_Oqzt42fb9mpeUHhnmADZDt6aqOTgq3If2VO/exec
+
+
+#viewe data: https://docs.google.com/spreadsheets/d/1TCerh-mEa17JDSeApFdG24jZ9IlTdZOh0d30YKdTNAs/edit?usp=sharing
+
+
+#techsparrow edit data  https://docs.google.com/spreadsheets/d/1TCerh-mEa17JDSeApFdG24jZ9IlTdZOh0d30YKdTNAs/edit?gid=0#gid=0
